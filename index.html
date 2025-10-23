@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My App Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .app-card {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .app-card h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .app-version {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .app-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .app-features {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .app-features h3 {
+            color: #667eea;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .app-features ul {
+            list-style: none;
+        }
+
+        .app-features li {
+            color: #555;
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .app-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2cbf 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .download-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .download-notification {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: bottom 0.5s ease;
+            z-index: 1000;
+        }
+
+        .download-notification.show {
+            bottom: 30px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 My App Store</h1>
+            <p>Download amazing apps for your needs</p>
+        </header>
+
+        <div class="apps-grid">
+            <!-- Farewell App -->
+            <div class="app-card">
+                <div class="app-icon">👋</div>
+                <h2>Farewell App</h2>
+                <div class="app-version">Version 1.0.0</div>
+                <p class="app-description">
+                    Create beautiful farewell memories with your friends and colleagues. Share messages, photos, and celebrate special moments together.
+                </p>
+                <div class="app-features">
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Create personalized farewell cards</li>
+                        <li>Share memories and photos</li>
+                        <li>Collect messages from everyone</li>
+                        <li>Beautiful templates and themes</li>
+                        <li>Export as PDF or share online</li>
+                    </ul>
+                </div>
+                <button class="download-btn" onclick="downloadApp('Farewell App')">
+                    📥 Download Now
+                </button>
+            </div>
+
+            <!-- Portfolio App -->
+            <div class="app-card">
+                <div class="app-icon">💼</div>
+                <h2>My Portfolio</h2>
+                <div class="app-version">Version 2.1.0</div>
+                <p class="app-description">
+                    Showcase your skills, projects, and achievements in a stunning digital portfolio. Perfect for professionals, creatives, and job seekers.
+                </p>
+                <div class="app-features">
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Professional portfolio templates</li>
+                        <li>Project showcase gallery</li>
+                        <li>Skills and experience timeline</li>
+                        <li>Contact form integration</li>
+                        <li>Responsive design for all devices</li>
+                    </ul>
+                </div>
+                <button class="download-btn" onclick="downloadApp('My Portfolio')">
+                    📥 Download Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="download-notification" id="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        function downloadApp(appName) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = `🎉 ${appName} is downloading...`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+            
+            // Simulate download - in a real scenario, you would link to actual APK/IPA files
+            console.log(`Downloading ${appName}...`);
+            
+            // Create a dummy download link
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = `${appName.replace(/\s+/g, '_')}.apk`;
+            
+            // For demo purposes, show alert
+            setTimeout(() => {
+                alert(`Thank you for downloading ${appName}!\n\nIn a production environment, this would download the actual app file.`);
+            }, 500);
+        }
+
+        // Add entrance animations on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.app-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
