@@ -280,7 +280,7 @@
                         <li>Export as PDF or share online</li>
                     </ul>
                 </div>
-                <button class="download-btn" onclick="downloadApp('Farewell App')">
+                <button class="download-btn" onclick="downloadApp('Farewell App', 'YOUR_FAREWELL_APP_LINK_HERE')">
                     📥 Download Now
                 </button>
             </div>
@@ -303,7 +303,7 @@
                         <li>Responsive design for all devices</li>
                     </ul>
                 </div>
-                <button class="download-btn" onclick="downloadApp('My Portfolio')">
+                <button class="download-btn" onclick="downloadApp('My Portfolio', 'YOUR_PORTFOLIO_APP_LINK_HERE')">
                     📥 Download Now
                 </button>
             </div>
@@ -315,7 +315,7 @@
     </div>
 
     <script>
-        function downloadApp(appName) {
+        function downloadApp(appName, appLink) {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
             
@@ -326,18 +326,22 @@
                 notification.classList.remove('show');
             }, 3000);
             
-            // Simulate download - in a real scenario, you would link to actual APK/IPA files
-            console.log(`Downloading ${appName}...`);
-            
-            // Create a dummy download link
-            const link = document.createElement('a');
-            link.href = '#';
-            link.download = `${appName.replace(/\s+/g, '_')}.apk`;
-            
-            // For demo purposes, show alert
-            setTimeout(() => {
-                alert(`Thank you for downloading ${appName}!\n\nIn a production environment, this would download the actual app file.`);
-            }, 500);
+            // Check if a valid link is provided
+            if (appLink && appLink !== 'YOUR_FAREWELL_APP_LINK_HERE' && appLink !== 'YOUR_PORTFOLIO_APP_LINK_HERE') {
+                // Create download link
+                const link = document.createElement('a');
+                link.href = appLink;
+                link.download = `${appName.replace(/\s+/g, '_')}`;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                // Show alert if no link is configured
+                setTimeout(() => {
+                    alert(`Please configure the download link for ${appName}.\n\nReplace 'YOUR_APP_LINK_HERE' with your actual app download URL in the HTML code.`);
+                }, 500);
+            }
         }
 
         // Add entrance animations on scroll
